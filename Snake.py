@@ -23,11 +23,13 @@ class Snake:
         return self.location[0]
     def move(self):
         new = tuple(map(lambda x, y: x + y, self.head(), self.direction))
-        if new in self.location or any(0 <= x < SIZE for x in new):
+        print(new)
+        if new in self.location or not all(0 <= x < SIZE for x in new):
             self.initialize()
             raise SnakeException
         self.location.insert(0, new)
         self.location.pop()
+        print(new)
     def place_food(self):
         self.food = (random.randint(0, SIZE - 1), random.randint(0, SIZE - 1))
         if self.food in self.location:

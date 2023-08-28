@@ -19,16 +19,19 @@ class SnakeGame:
         try:
             self.snake.move()
         except SnakeException:
+            print("exco")
             self.done = True
         if self.done:
             state = self.get_observation()
             return state, length, self.done, self.done, {}
         self.snake.eaten()
         state = self.get_observation()
-        return state, length, self.done, self.done, {}
+        return state, length, self.done, False, {}
 
     def get_observation(self):
         screen = np.zeros((SIZE, SIZE))
         for s in self.snake.location: screen[s] = 1
         screen[self.snake.food] = 2
         return screen
+    def reset(self):
+        return self.get_observation()
