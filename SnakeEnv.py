@@ -8,7 +8,6 @@ import torch.utils.tensorboard
 from stable_baselines3 import DQN
 from stable_baselines3 import PPO
 from stable_baselines3.common.evaluation import evaluate_policy
-import model
 #screen parameters
 SIZE = 20
 SPEED = 100
@@ -115,6 +114,7 @@ class SnakeEnv(gym.Env):
         quit()
 
 def env_test(env, episodes, model=None, custom=False):
+    reward_per_episode_list = []
     for episode in range(episodes):
         obs, _ = env.reset()
         done = False
@@ -131,36 +131,26 @@ def env_test(env, episodes, model=None, custom=False):
             obs, reward, done, _, score = env.step(action)
             reward_per_episode += reward
         print("Episode: {}\n Reward per episode: {}\n Score: {}".format(episode, reward_per_episode, score['score']))
-    env.close()
+        reward_per_episode_list.append(reward_per_episode)
+    return reward_per_episode_list
 
 if __name__=='__main__':
     env = SnakeEnv()
-    # check_env(env)
-    # episodes = 50
-    # log_path = os.path.join('training', 'logs')
-    #
-    # PPO_path = os.path.join('training', 'trained_models', 'PPO_snake')
-    # model = PPO.load(PPO_path, env=env)
-    # evaluation = evaluate_policy(model, env, n_eval_episodes=10)
-    # print("Average reward: {}\n Standard deviation: {}".format(evaluation[0], evaluation[1]))
+    check_env(env)
+    episodes = 50
 
+    log_path = os.path.join('training', 'logs')
+    DQN_path = os.path.join('training', 'trained_models', 'DQN_snake')
+    PPO_path = os.path.join('training', 'trained_models', 'PPO_snake')
+
+    # model = PPO('MlpPolicy', env, verbose=1)
     # model = DQN('MlpPolicy', env, verbose=1, tensorboard_log=log_path)
-    # model = PPO('MlpPolicy', env, verbose=1, tensorboard_log=log_path)
 
     # model.learn(total_timesteps=int(1e5), reset_num_timesteps=False)
-
-    # PPO_path = os.path.join('training', 'trained_models', 'PPO_snake')
-    # DQN_path = os.path.join('training', 'trained_models', 'DQN_snake')
 
     # model.save(DQN_path)
     # model.save(PPO_path)
 
-    PATH = 'model/model.pt'
-    # model = model.Linear_QNet(11, 256, 3)
-    model = torch.load(PATH)
-    # print(model.eval())
-
-    env_test(env, 50, model, custom=True)
 
 
 
